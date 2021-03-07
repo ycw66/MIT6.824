@@ -1,0 +1,286 @@
+*** Starting crash test.
+[../pg-being_ernest.txt ../pg-dorian_gray.txt ../pg-frankenstein.txt ../pg-grimm.txt ../pg-huckleberry_finn.txt ../pg-metamorphosis.txt ../pg-sherlock_holmes.txt ../pg-tom_sawyer.txt]
+[INFO]worker成功注册， workerID:0
+[INFO]请求Map task...
+[INFO]分配一个split，文件名：  ../pg-being_ernest.txt
+[INFO]得到一个map任务, 文件名:../pg-being_ernest.txt  任务编号:0  nReduce:10
+[INFO]执行Map task
+[INFO]worker成功注册， workerID:1
+[INFO]请求Map task...
+[INFO]分配一个split，文件名：  ../pg-dorian_gray.txt
+[INFO]得到一个map任务, 文件名:../pg-dorian_gray.txt  任务编号:1  nReduce:10
+[INFO]执行Map task
+[INFO]worker成功注册， workerID:2
+[INFO]请求Map task...
+[INFO]分配一个split，文件名：  ../pg-frankenstein.txt
+[INFO]得到一个map任务, 文件名:../pg-frankenstein.txt  任务编号:2  nReduce:10
+[INFO]执行Map task
+[INFO]成功执行Map task, mapFile:../pg-dorian_gray.txt, workerId:1
+[INFO]本轮任务完成
+[INFO]worker成功注册， workerID:3
+[INFO]请求Map task...
+[INFO]成功执行Map task, mapFile:../pg-frankenstein.txt, workerId:2
+[INFO]本轮任务完成
+[INFO]分配一个split，文件名：  ../pg-grimm.txt
+[INFO]得到一个map任务, 文件名:../pg-grimm.txt  任务编号:3  nReduce:10
+[INFO]执行Map task
+[INFO]寻找新的任务
+[INFO]寻找新的任务
+[INFO]请求Map task...
+[INFO]请求Map task...
+[INFO]分配一个split，文件名：  ../pg-huckleberry_finn.txt
+[INFO]分配一个split，文件名：  ../pg-metamorphosis.txt
+[INFO]得到一个map任务, 文件名:../pg-huckleberry_finn.txt  任务编号:4  nReduce:10
+[INFO]执行Map task
+[INFO]得到一个map任务, 文件名:../pg-metamorphosis.txt  任务编号:5  nReduce:10
+[INFO]执行Map task
+[INFO]成功执行Map task, mapFile:../pg-metamorphosis.txt, workerId:1
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]请求Map task...
+[INFO]分配一个split，文件名：  ../pg-sherlock_holmes.txt
+[INFO]得到一个map任务, 文件名:../pg-sherlock_holmes.txt  任务编号:6  nReduce:10
+[INFO]执行Map task
+[INFO]成功执行Map task, mapFile:../pg-grimm.txt, workerId:3
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]请求Map task...
+[INFO]分配一个split，文件名：  ../pg-tom_sawyer.txt
+[INFO]得到一个map任务, 文件名:../pg-tom_sawyer.txt  任务编号:7  nReduce:10
+[INFO]执行Map task
+[INFO]成功执行Map task, mapFile:../pg-tom_sawyer.txt, workerId:3
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]成功执行Map task, mapFile:../pg-sherlock_holmes.txt, workerId:1
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]成功执行Map task, mapFile:../pg-being_ernest.txt, workerId:0
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]成功执行Map task, mapFile:../pg-huckleberry_finn.txt, workerId:2
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]请求Reduce task
+[INFO]分配一个reduce task，编号：  0
+[INFO]得到一个reduce任务, ReduceId:0
+[INFO]寻找新的任务
+[INFO]请求Reduce task
+[INFO]分配一个reduce task，编号：  1
+[INFO]得到一个reduce任务, ReduceId:1
+[INFO]成功执行Reduce task
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]请求Reduce task
+[INFO]分配一个reduce task，编号：  2
+[INFO]得到一个reduce任务, ReduceId:2
+[INFO]成功执行Reduce task
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]请求Reduce task
+[INFO]分配一个reduce task，编号：  3
+[INFO]得到一个reduce任务, ReduceId:3
+[INFO]成功执行Reduce task
+[INFO]本轮任务完成
+[INFO]成功执行Reduce task
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]请求Reduce task
+[INFO]分配一个reduce task，编号：  4
+[INFO]得到一个reduce任务, ReduceId:4
+[INFO]成功执行Reduce task
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]请求Reduce task
+[INFO]分配一个reduce task，编号：  5
+[INFO]得到一个reduce任务, ReduceId:5
+[INFO]寻找新的任务
+[INFO]请求Reduce task
+[INFO]分配一个reduce task，编号：  6
+[INFO]得到一个reduce任务, ReduceId:6
+[INFO]成功执行Reduce task
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]请求Reduce task
+[INFO]分配一个reduce task，编号：  7
+[INFO]得到一个reduce任务, ReduceId:7
+[INFO]成功执行Reduce task
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]请求Reduce task
+[INFO]分配一个reduce task，编号：  8
+[INFO]得到一个reduce任务, ReduceId:8
+[INFO]成功执行Reduce task
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]请求Reduce task
+[INFO]分配一个reduce task，编号：  9
+[INFO]得到一个reduce任务, ReduceId:9
+[INFO]寻找新的任务
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]成功执行Reduce task
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]成功执行Reduce task
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]寻找新的任务
+[INFO]寻找新的任务
+[INFO]寻找新的任务
+[INFO]worker成功注册， workerID:4
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]worker成功注册， workerID:5
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]worker成功注册， workerID:6
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]寻找新的任务
+[INFO]寻找新的任务
+[INFO]worker成功注册， workerID:7
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]worker成功注册， workerID:8
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]worker成功注册， workerID:9
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]寻找新的任务
+[INFO]寻找新的任务
+[INFO]worker成功注册， workerID:10
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]worker成功注册， workerID:11
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]worker成功注册， workerID:12
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]寻找新的任务
+[INFO]寻找新的任务
+[INFO]worker成功注册， workerID:13
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]worker成功注册， workerID:14
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]worker成功注册， workerID:15
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]寻找新的任务
+[INFO]寻找新的任务
+[INFO]worker成功注册， workerID:16
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]worker成功注册， workerID:17
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]worker成功注册， workerID:18
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]寻找新的任务
+[INFO]寻找新的任务
+[INFO]worker成功注册， workerID:19
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]worker成功注册， workerID:20
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]worker成功注册， workerID:21
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]寻找新的任务
+[INFO]寻找新的任务
+[INFO]worker成功注册， workerID:22
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]worker成功注册， workerID:23
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]worker成功注册， workerID:24
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]寻找新的任务
+[INFO]寻找新的任务
+[INFO]worker成功注册， workerID:25
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]worker成功注册， workerID:26
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]worker成功注册， workerID:27
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]寻找新的任务
+[INFO]寻找新的任务
+[INFO]worker成功注册， workerID:28
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]worker成功注册， workerID:29
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]worker成功注册， workerID:30
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]寻找新的任务
+[INFO]寻找新的任务
+[INFO]worker成功注册， workerID:31
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]worker成功注册， workerID:32
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]worker成功注册， workerID:33
+[INFO]没有多余的任务，等一等...
+[INFO]本轮任务完成
+[INFO]寻找新的任务
+[INFO]寻找新的任务
+[INFO]寻找新的任务
+--- crash test: PASS
+*** PASSED ALL TESTS
