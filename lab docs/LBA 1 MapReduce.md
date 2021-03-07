@@ -1,6 +1,6 @@
-# LBA 1 MapReduce
+# LBA 1 MapReduce 实验报告
 
-- 组成：一个main process 多个 worker process
+- MR组成：一个main process 多个 worker process
 
 - 任务：结合paper，完成master和worker，实现mapreduce框架
 
@@ -94,35 +94,87 @@ go run -race mrworker.go wc.so
 
 ## **设计细节**
 
-1. worker创建完毕，首先向master进行注册，master返回当前整个MapReduce任务的执行状态，下面根据回复信息，work向master请求相应的任务
-2. worker注册完毕后，创建一个独立的线程，该线程每1s向master发送一次心跳信息，如果master 10s内没有接收到worker的心跳信息，则认为此worker挂掉了，由master回收此worker的任务，后面重新将其分配到一个新的worker上
-3. 当master在Map阶段或Reduce阶段有剩余任务未分配时，则等待空闲的worker申请
-4. 当worker完成Map任务或Reduce任务后，向master汇报，同时检查如果有剩余任务则领取任务，如果所有任务均结束，则退出。
+1. worker创建完毕，首先向master进行注册。
+
+   ```go
+   // worker.go
+   func Worker(mapf func(string, string) []KeyValue,
+   	reducef func(string, []string) string) {
+   	RegiserInfo := RegisterWork()
+   }
+   ```
+
+   
+
+2. worker在空闲状态时，获取master的状态信息，master返回当前整个MapReduce任务的执行状态，下面根据回复信息，work向master请求相应的任务。
+
+   | masterState | 意义                             |
+   | ----------- | -------------------------------- |
+   | 1           | 有剩余的map task                 |
+   | 2           | Map阶段结束，有剩余的reduce task |
+   | 3           | 整个MapReduce任务结束            |
+   | 其他        | 需要等待                         |
+
+   ```go
+   // worker.go
+   masterState = GetMasterState()
+   if masterState  == 1 {
+       // 请求Map任务
+   } else masterState == 2 {
+       // 请求Reduce任务
+   } else masterState == 3 {
+       // 请求退出
+   } else {
+       // 等待
+   }
+   ```
+
+3. master维护所有注册的worker的信息，并每隔10s判断他们的执行状态
+
+   ```go
+   // master.go
+   // check every worker  
+   func (m *Master) checkWorkers() {
+   	m.mu.Lock()
+   	defer m.mu.Unlock()
+   	timeNow := time.Now().Unix()
+   	for _, worker := range m.workerList {
+   		if worker.workStatus == MAP_STATE && timeNow-worker.startTime > 10 {
+   			// recover the map task
+   			m.recoverMapID = append(m.recoverMapID, worker.mapID)
+   			m.waitFiles = append(m.waitFiles, worker.workInfo)
+   		} else if worker.workStatus == REDUCE_STATE && timeNow-worker.startTime > 10 {
+   			tar, _ := strconv.Atoi(worker.workInfo)
+   			m.reduceState[tar] = 0
+   			m.reduceCnts--
+   		}
+   	}
+   }
+   ```
+
+   - 保证如果10s内worker没有执行完相应的任务，就将此任务回收
+
+   
+
+4. worker执行一个任务的流程如下：请求任务，执行任务，任务完成后向master的反馈。master会根据worker的反馈结果更新mapreduce任务的进度。
+
+   ```go
+   // worker.go
+   // 以执行Map任务为例
+   if masterState == 1 {
+       taskInfo := RequestMapTask(workerID)
+       ExecuteMapTask(workerID, taskInfo, mapf)
+       CallFinishMapTask(workerID, taskInfo.Id, taskInfo.Filename) 
+   }
+   ```
+
+5. worker和master之间采用RPC进行通信，注意对master中的方法加锁以避免竞争冒险。
 
 
 
-
-测试问题
-
-- mr-wc-all mr-correct-wc.txt 不同：第 111756 字节，第 10675 行
-
-  correct:	`keyhole 1`
-
-  my:	 a 13382  mr-out-0  
-  			a 13382  mr-out-2
-
-  - 解决竞争冒险即可
-
-- 无法通过wc
-
-  解决：需要删除mr-out临时文件
-
-- 无法通过map parallelism test
+>实验详细代码：
+>
+>https://github.com/ycw66/MIT6.824/tree/master/src/main
 
 
 
-
-
-![image-20210301202632468](/home/weggle/.config/Typora/typora-user-images/image-20210301202632468.png)
-
-![image-20210301202642603](/home/weggle/.config/Typora/typora-user-images/image-20210301202642603.png)
