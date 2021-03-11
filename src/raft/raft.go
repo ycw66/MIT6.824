@@ -301,6 +301,107 @@ func (rf *Raft) getRandomTimeout() int {
 	return (rand.Int()%500 + 300)
 }
 
+func (rf *Raft) startAppendEntries() {
+	for i := 0; i < len(rf.peers); i++ {
+		if i == rf.me {
+			continue
+		}
+		go func(i int) {
+			rf.mu.Lock()
+			args := AppendEntriesArgs{}
+			reply := AppendEntriesReply{}
+			args.Term = rf.currentTerm
+			args.LeaderId = rf.me
+			rf.mu.Unlock()
+			if rf.sendAppendEntries(i, &args, &reply) {
+				rf.mu.Lock()
+				if reply.Term > rf.currentTerm {
+					rf.state = Follower
+					rf.votedFor = nil
+					rf.currentTerm = reply.Term
+					rf.waitingTime = 0
+				}
+				rf.mu.Unlock()
+			}
+		}(i)
+	}
+}
+
+func (rf *Raft) startElection() {
+	votes := 1
+	DPrintf("[INFO test begin%d]\n", rf.me)
+	for i := 0; i < len(rf.peers); i++ {
+		if i == rf.me {
+			continue
+		}
+		// request concurrently
+		go func(i int) {
+			// when request concurrently, we should define vars below in every goroutine in order to avoid racing
+			requestArgs := RequestVoteArgs{}
+			replyArgs := RequestVoteReply{}
+			rf.mu.Lock()
+			requestArgs.Term = rf.currentTerm
+			requestArgs.CandidateId = rf.me
+			DPrintf("[Request %d -> %d]\n", rf.me, i)
+			rf.mu.Unlock()
+			if rf.sendRequestVote(i, &requestArgs, &replyArgs) {
+				rf.mu.Lock()
+				if replyArgs.VoteGranted {
+					votes++
+					if 2*votes > len(rf.peers) && rf.state == Candidate {
+						// elected as leader
+						rf.state = Leader
+						rf.waitingTime = 0
+						DPrintf("[INFO %d] %d is elected as leader\n", rf.me, rf.me)
+					}
+				} else {
+					// if there is some server whose term is bigger, current server must be a follower
+					if replyArgs.Term > rf.currentTerm {
+						rf.state = Follower
+						rf.currentTerm = replyArgs.Term
+					}
+				}
+				rf.mu.Unlock()
+			}
+			DPrintf("[Answer %d -> %d]\n", i, rf.me)
+		}(i)
+	}
+}
+
+func (rf *Raft) loop() {
+	timeout := rf.getRandomTimeout()
+	for {
+		if rf.killed() {
+			return
+		}
+		rf.mu.Lock()
+		state := rf.state
+		rf.mu.Unlock()
+		switch state {
+		case Follower, Candidate:
+			time.Sleep(time.Duration(50) * time.Millisecond)
+			//TODO:2B
+			rf.mu.Lock()
+			rf.waitingTime += 50
+			if rf.waitingTime > timeout {
+				rf.currentTerm++
+				rf.state = Candidate
+				rf.waitingTime = 0
+				rf.mu.Unlock()
+				DPrintf("[INFO %d] timeout=%d\n", rf.me, timeout)
+				rf.startElection()
+				timeout = rf.getRandomTimeout()
+			} else {
+				rf.mu.Unlock()
+			}
+
+		case Leader:
+			rf.startAppendEntries()
+			time.Sleep(time.Duration(200) * time.Millisecond)
+		}
+	}
+}
+
 //TODO: adjust the timeout now(300, 600)ms
 func (rf *Raft) ticker() {
 	for {
@@ -314,7 +415,7 @@ func (rf *Raft) ticker() {
 			}
 			rf.mu.Lock() // lock the rf.waitingTime
 			// timer is stoped if server is elected as leader
-			if rf.state == Follower { //
+			if rf.state != Leader { //
 				rf.waitingTime += 50
 				if rf.waitingTime > timeout {
 					rf.state = Candidate
@@ -332,10 +433,6 @@ func (rf *Raft) ticker() {
 		}
 		// timeout elapsed, sendRequestvote
 		// state from follower to candidate
-		requestArgs := RequestVoteArgs{}
-		replyArgs := RequestVoteReply{}
-		requestArgs.Term = rf.currentTerm
-		requestArgs.CandidateId = rf.me
 		votes := 1
 		//TODO:2B
 		//requestArgs.LastLogIndex =
@@ -346,8 +443,14 @@ func (rf *Raft) ticker() {
 			if i == rf.me {
 				continue
 			}
-			// TODO: 可以改成并发请求
+			// request concurrently
 			go func(i int) {
+
+				// when request concurrently, we should define vars below in every goroutine in order to avoid racing
+				requestArgs := RequestVoteArgs{}
+				replyArgs := RequestVoteReply{}
+				requestArgs.Term = rf.currentTerm
+				requestArgs.CandidateId = rf.me
 				DPrintf("[Request %d -> %d]\n", rf.me, i)
 				if rf.sendRequestVote(i, &requestArgs, &replyArgs) {
 					rf.mu.Lock()
@@ -401,13 +504,13 @@ func (rf *Raft) heartBeat() {
 				if i == rf.me {
 					continue
 				}
-				args := AppendEntriesArgs{}
-				reply := AppendEntriesReply{}
-				rf.mu.Lock()
-				args.Term = rf.currentTerm
-				args.LeaderId = rf.me
-				rf.mu.Unlock()
 				go func(i int) {
+					rf.mu.Lock()
+					args := AppendEntriesArgs{}
+					reply := AppendEntriesReply{}
+					args.Term = rf.currentTerm
+					args.LeaderId = rf.me
+					rf.mu.Unlock()
 					if rf.sendAppendEntries(i, &args, &reply) {
 						rf.mu.Lock()
 						if reply.Term > rf.currentTerm {
@@ -447,8 +550,9 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	rf.votedFor = nil
 	rf.waitingTime = 0
 	// Your initialization code here (2A, 2B, 2C).
-	go rf.ticker()
-	go rf.heartBeat()
+	// go rf.ticker()
+	// go rf.heartBeat()
+	go rf.loop()
 
 	// initialize from state persisted before a crash
 	rf.readPersist(persister.ReadRaftState())

@@ -39,12 +39,15 @@ Raft将一致性维护算法分为三个步骤：
 
 
 
-### 注意
+### ==注意==
 
-- 候选人不可以投票给其他人
-- leader当选后停止计时器
-- 避免投票和成为candidate同时发生，使用mutex保证
-- 在disconnect后Call返回失败的时间较长，此时如果主动等待其返回结果，会造成其他的follower进化成candidate，所以不能选择主动等待结果。（这个BUG卡我的时间最久）
+1. 候选人不可以投票给其他人
+
+2. leader当选后停止计时器
+
+3. 避免投票和成为candidate同时发生，使用mutex保证
+
+4. 在disconnect后Call返回失败的时间较长，此时如果主动等待其返回结果，会造成其他的follower进化成candidate，所以不能选择主动等待结果。（这个BUG卡我最久）
 
 
 
@@ -65,3 +68,62 @@ a.unlock()
 }
 ```
 
+
+
+
+
+#### 错误日志
+
+1. 对应注意点(4)
+
+   ```bash
+   Test (2A): initial election ...
+   2021/03/11 20:27:45 [INFO 1] timeout=1755
+   2021/03/11 20:27:45 [INFO 1] server 1 change from follower to candidate, term=1
+   2021/03/11 20:27:45 [INFO 2] timeout=1797
+   2021/03/11 20:27:45 [INFO 2] server 2 change from follower to candidate, term=1
+   2021/03/11 20:27:45 [INFO test begin1]
+   2021/03/11 20:27:45 [INFO test begin2]
+   2021/03/11 20:27:45 [Request 1 -> 0]
+   2021/03/11 20:27:45 [Request 2 -> 0]
+   2021/03/11 20:27:45 [INFO 0] 0 votes for 1
+   2021/03/11 20:27:45 [Answer 0 -> 1]
+   2021/03/11 20:27:45 [Request 1 -> 2]
+   2021/03/11 20:27:45 [Answer 0 -> 2]
+   2021/03/11 20:27:45 [Request 2 -> 1]
+   labgob warning: Decoding into a non-default variable/field VoteGranted may not work
+   2021/03/11 20:27:45 [Answer 2 -> 1]
+   2021/03/11 20:27:45 [INFO test end1]
+   2021/03/11 20:27:45 [INFO 1] 1 is elected as leader
+   2021/03/11 20:27:45 [Answer 1 -> 2]
+   2021/03/11 20:27:45 [INFO test end2]
+     ... Passed --   4.5  3   32    4048    0
+   Test (2A): election after network failure ...
+   2021/03/11 20:27:49 [INFO 0] timeout=1589
+   2021/03/11 20:27:49 [INFO 0] server 0 change from follower to candidate, term=1
+   2021/03/11 20:27:49 [INFO test begin0]
+   2021/03/11 20:27:49 [Request 0 -> 1]
+   2021/03/11 20:27:49 [INFO 1] 1 votes for 0
+   2021/03/11 20:27:49 [Answer 1 -> 0]
+   2021/03/11 20:27:49 [Request 0 -> 2]
+   2021/03/11 20:27:49 [INFO 2] 2 votes for 0
+   2021/03/11 20:27:49 [Answer 2 -> 0]
+   2021/03/11 20:27:49 [INFO test end0]
+   2021/03/11 20:27:49 [INFO 0] 0 is elected as leader
+   2021/03/11 20:27:49 [INFO TEST] 0 is disconnected
+   2021/03/11 20:27:52 [INFO 1] timeout=2191
+   2021/03/11 20:27:52 [INFO 1] server 1 change from follower to candidate, term=2
+   2021/03/11 20:27:52 [INFO test begin1]
+   2021/03/11 20:27:52 [Request 1 -> 0]
+   2021/03/11 20:27:52 [INFO 2] timeout=2230
+   2021/03/11 20:27:52 [INFO 2] server 2 change from follower to candidate, term=2
+   2021/03/11 20:27:52 [INFO test begin2]
+   2021/03/11 20:27:52 [Request 2 -> 0]
+   --- FAIL: TestReElection2A (6.90s)
+       config.go:330: expected one leader, got none
+   FAIL
+   exit status 1
+   FAIL	_/home/weggle/programming/6.824/src/raft	11.408s
+   ```
+
+   
